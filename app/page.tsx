@@ -17,7 +17,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <section className="container mx-auto py-8 px-4 max-w-4xl">
+      <section className="container mx-auto py-8 px-4 max-w-4xl md:ml-80 lg:ml-96">
         {activeTab === "anatomy" && <AnatomyTab />}
         {activeTab === "analyze" && <AnalyzeTab />}
         {activeTab === "coming-soon" && <ComingSoonTab />}
