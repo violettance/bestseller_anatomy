@@ -11,6 +11,7 @@ export function AnatomyTab() {
   const [pronounStyleData, setPronounStyleData] = useState<any>(null)
   const [chapterCountData, setChapterCountData] = useState<any>(null)
   const [ratingCountData, setRatingCountData] = useState<any>(null)
+  const [moodDistributionData, setMoodDistributionData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -42,6 +43,7 @@ export function AnatomyTab() {
           pronounStyleResponse,
           chapterCountResponse,
           ratingCountResponse,
+          moodDistributionResponse,
         ] = await Promise.all([
           fetch("/data/charts/readability_flesch_kincaid.json"),
           fetch("/data/charts/readability_quadrant_chart.json"),
@@ -49,6 +51,7 @@ export function AnatomyTab() {
           fetch("/data/charts/character_pronoun_style.json"),
           fetch("/data/charts/character_chapter_count_by_focus.json"),
           fetch("/data/charts/character_rating_count_by_focus.json"),
+          fetch("/data/charts/character_mood_distribution.json"),
         ])
 
         if (!readabilityResponse.ok) {
@@ -75,12 +78,17 @@ export function AnatomyTab() {
           throw new Error(`Failed to load rating count chart data: ${ratingCountResponse.statusText}`)
         }
 
+        if (!moodDistributionResponse.ok) {
+          throw new Error(`Failed to load mood distribution chart data: ${moodDistributionResponse.statusText}`)
+        }
+
         const readabilityData = await readabilityResponse.json()
         const quadrantData = await quadrantResponse.json()
         const readingTimeData = await readingTimeResponse.json()
         const pronounStyleData = await pronounStyleResponse.json()
         const chapterCountData = await chapterCountResponse.json()
         const ratingCountData = await ratingCountResponse.json()
+        const moodDistributionData = await moodDistributionResponse.json()
 
         setReadabilityData(readabilityData)
         setQuadrantData(quadrantData)
@@ -88,6 +96,7 @@ export function AnatomyTab() {
         setPronounStyleData(pronounStyleData)
         setChapterCountData(chapterCountData)
         setRatingCountData(ratingCountData)
+        setMoodDistributionData(moodDistributionData)
         setIsLoading(false)
       } catch (error) {
         console.error("Failed to load chart data:", error)
@@ -273,11 +282,15 @@ export function AnatomyTab() {
 
           {/* Sixth paragraph - Rating Count by Narrative Focus */}
           <p className="text-lg text-zinc-300 mb-8">
-            Character-driven novels generate substantially higher reader engagement - measured by median rating counts
+            Character-driven novels generate substantially higher reader engagement - measured by median rating counts -
             than mixed or plot-driven narratives. This pattern implies that when a story leans into the inner lives and
             relationships of its characters, readers feel more compelled to respond and discuss, whereas purely
             plot-focused works may maintain momentum but sacrifice the deeper personal connection that drives ongoing
-            interaction.
+            interaction. In fact, among bestsellers, no books are perceived by readers as slow-paced; over 80% fall into
+            the medium pace category. This underscores a critical balance: while pacing sustains attention, it's the
+            emotional depth, especially through strong character development and the presence of distinctly loveable
+            personalities, that cultivates reader loyalty and repeat engagement. In the attention economy, momentum may
+            open the door, but it's emotional anchoring that makes readers stay.
           </p>
 
           {/* Sixth Chart */}
@@ -292,6 +305,37 @@ export function AnatomyTab() {
           ) : ratingCountData ? (
             <div className="mb-8">
               <ChartViewer chartData={ratingCountData} height={450} />
+            </div>
+          ) : (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+              <p className="text-zinc-400">No chart data available</p>
+            </div>
+          )}
+
+          {/* Seventh paragraph - Mood Distribution by Narrative Focus */}
+          <p className="text-lg text-zinc-300 mb-8">
+            This mood segmentation reveals a clear psychological divergence in how readers experience different
+            narrative structures. Character-Driven stories evoke strong emotional and hopeful responses, suggesting
+            readers engage empathetically and seek inner transformation. Mixed narratives strike a balance between
+            affect and action, indicating versatility in appealing to varied reader preferences. Plot-Driven stories, on
+            the other hand, register minimal emotional depth, emphasizing external tension and adventure. This skew
+            toward surface-level intensity may explain their broader commercial utility but potentially lower long-term
+            resonance. These patterns underscore how narrative focus doesn't just guide storytelling—it actively shapes
+            emotional investment and reader satisfaction.
+          </p>
+
+          {/* Seventh Chart */}
+          {isLoading ? (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+              <p className="text-zinc-400">Loading chart data...</p>
+            </div>
+          ) : error ? (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+              <p className="text-zinc-400">Error: {error}</p>
+            </div>
+          ) : moodDistributionData ? (
+            <div className="mb-8">
+              <ChartViewer chartData={moodDistributionData} height={500} />
             </div>
           ) : (
             <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
