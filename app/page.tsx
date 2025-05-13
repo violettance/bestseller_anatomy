@@ -5,9 +5,11 @@ import { NavTabs } from "@/components/nav-tabs"
 import { AnatomyTab } from "@/components/tabs/anatomy-tab"
 import { AnalyzeTab } from "@/components/tabs/analyze-tab"
 import { ComingSoonTab } from "@/components/tabs/coming-soon-tab"
+import { useMediaQuery } from "@/hooks/use-mobile"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("anatomy")
+  const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
     <main className="min-h-screen bg-zinc-900 text-zinc-100">
@@ -17,7 +19,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <section className="container mx-auto py-8 px-4 max-w-4xl md:ml-80 lg:ml-96">
+      <section className={`container mx-auto py-8 px-4 ${isMobile ? "w-full" : "max-w-4xl md:ml-80 lg:ml-96"}`}>
         {activeTab === "anatomy" && <AnatomyTab />}
         {activeTab === "analyze" && <AnalyzeTab />}
         {activeTab === "coming-soon" && <ComingSoonTab />}

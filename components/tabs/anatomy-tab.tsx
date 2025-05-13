@@ -4,8 +4,10 @@ import { ChartViewer } from "@/components/chart-viewer"
 import { PodcastPlayer } from "@/components/podcast-player"
 import { TableOfContents } from "@/components/table-of-contents"
 import { useEffect, useState } from "react"
+import { useMediaQuery } from "@/hooks/use-mobile"
 
 export function AnatomyTab() {
+  const isMobile = useMediaQuery("(max-width: 768px)")
   const [readabilityData, setReadabilityData] = useState<any>(null)
   const [quadrantData, setQuadrantData] = useState<any>(null)
   const [readingTimeData, setReadingTimeData] = useState<any>(null)
@@ -113,7 +115,7 @@ export function AnatomyTab() {
         setStructureApprovalData(structureApprovalData)
         setIsLoading(false)
       } catch (error) {
-        console.error("Failed toload chart data:", error)
+        console.error("Failed to load chart data:", error)
         setError(error instanceof Error ? error.message : "Unknown error")
         setIsLoading(false)
       }
@@ -129,12 +131,15 @@ export function AnatomyTab() {
 
       {/* Main Content */}
       <div className="pt-4">
-        <h1 id="introduction" className="text-3xl md:text-4xl font-bold mb-8 text-white leading-tight scroll-mt-32">
+        <h1
+          id="introduction"
+          className={`${isMobile ? "text-2xl" : "text-3xl md:text-4xl"} font-bold mb-6 text-white leading-tight scroll-mt-32`}
+        >
           The Bestseller's Blueprint: Unveiling the Secrets Behind Today's Most Captivating Stories
         </h1>
 
         <div className="prose prose-invert max-w-none">
-          <p className="text-lg text-white mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-white mb-6`}>
             What truly makes a book a bestseller? This project is designed to peel back the layers of 2024's most
             talked-about fiction, venturing beyond simple plot summaries. A unique analytical framework has been
             developed, enabling the examination of everything from the subtle dance of narrative tension and the rhythm
@@ -147,15 +152,17 @@ export function AnatomyTab() {
           {/* Podcast Player */}
           <PodcastPlayer
             spotifyUrl="https://open.spotify.com/episode/0VUkAMSWPEDEjaGNjG1vGC?si=a9h0mEtVRCWiQ4LnLdf8TA"
-            title="The Open Door: Making Complex Stories Approachable"
-            className="my-10"
+            className="my-8"
           />
 
-          <h2 id="open-door" className="text-xl md:text-2xl font-semibold mt-12 mb-6 text-white scroll-mt-32">
+          <h2
+            id="open-door"
+            className={`${isMobile ? "text-xl" : "text-xl md:text-2xl"} font-semibold mt-10 mb-4 text-white scroll-mt-32`}
+          >
             The Open Door: How Bestsellers Make Complex Stories Approachable
           </h2>
 
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Most bestselling books are written at a readability level between 4th and 5th grade, indicating that clear,
             accessible language is a defining trait of commercial literary success. This suggests that authors aiming
             for mass appeal tend to favor simplicity over complexity, making their narratives more digestible for a
@@ -165,25 +172,25 @@ export function AnatomyTab() {
 
           {/* First Chart */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : readabilityData ? (
-            <div className="mb-8">
-              <ChartViewer chartData={readabilityData} />
+            <div className="mb-6">
+              <ChartViewer chartData={readabilityData} height={isMobile ? 300 : 400} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}
 
           {/* Second paragraph */}
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             The chart shows a clear trend: bestselling books overwhelmingly favor shorter texts written in simpler
             language. Two dominant clusters stand out - stories that are both easy to read and brief, and those that
             maintain moderate ease while still being concise. This pattern reveals something deeper than stylistic
@@ -195,25 +202,25 @@ export function AnatomyTab() {
 
           {/* Second Chart */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : quadrantData ? (
-            <div className="mb-8">
-              <ChartViewer chartData={quadrantData} height={450} />
+            <div className="mb-6">
+              <ChartViewer chartData={quadrantData} height={isMobile ? 350 : 450} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}
 
           {/* Third paragraph */}
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Genres like Fantasy, Historical Fiction, and Young Adult require significantly more reading time than the
             overall average of 9.57h, indicating their tendency toward longer or denser narratives. In contrast, Drama,
             Crime Fiction, and Magical Realism fall well below the average, suggesting relatively shorter or more
@@ -222,29 +229,32 @@ export function AnatomyTab() {
 
           {/* Third Chart */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : readingTimeData ? (
-            <div className="mb-8">
-              <ChartViewer chartData={readingTimeData} height={450} />
+            <div className="mb-6">
+              <ChartViewer chartData={readingTimeData} height={isMobile ? 350 : 450} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}
 
           {/* Fourth section - Character and Narrative */}
-          <h2 id="cast-canvas" className="text-xl md:text-2xl font-semibold mt-12 mb-6 text-white scroll-mt-32">
+          <h2
+            id="cast-canvas"
+            className={`${isMobile ? "text-xl" : "text-xl md:text-2xl"} font-semibold mt-10 mb-4 text-white scroll-mt-32`}
+          >
             The Cast and the Canvas: How Bestsellers Populate Rich Worlds with Resonant Characters
           </h2>
 
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Narrative perspective choices in bestselling fiction suggest a strategic balance between intimacy and
             breadth. The dominance of "External Observer" and "Mixed Voice" styles points to a tendency among popular
             authors to maintain a certain emotional distance while offering selective interiority when needed. This
@@ -256,25 +266,25 @@ export function AnatomyTab() {
 
           {/* Fourth Chart */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : pronounStyleData ? (
-            <div className="mb-8">
-              <ChartViewer chartData={pronounStyleData} height={450} />
+            <div className="mb-6">
+              <ChartViewer chartData={pronounStyleData} height={isMobile ? 350 : 450} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}
 
           {/* Fifth paragraph - Chapter Count by Narrative Focus */}
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Books with a plot driven narrative focus tend to have significantly more chapters on average than those with
             character driven or mixed structures. This suggests that plot-oriented stories may rely on frequent
             structural breaks - such as cliffhangers or pacing pivots - to sustain momentum and keep readers engaged. In
@@ -284,25 +294,25 @@ export function AnatomyTab() {
 
           {/* Fifth Chart */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : chapterCountData ? (
-            <div className="mb-8">
-              <ChartViewer chartData={chapterCountData} height={450} />
+            <div className="mb-6">
+              <ChartViewer chartData={chapterCountData} height={isMobile ? 350 : 450} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}
 
           {/* Sixth paragraph - Rating Count by Narrative Focus */}
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Character-driven novels generate substantially higher reader engagement - measured by median rating counts -
             than mixed or plot-driven narratives. This pattern implies that when a story leans into the inner lives and
             relationships of its characters, readers feel more compelled to respond and discuss, whereas purely
@@ -316,25 +326,25 @@ export function AnatomyTab() {
 
           {/* Sixth Chart */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : ratingCountData ? (
-            <div className="mb-8">
-              <ChartViewer chartData={ratingCountData} height={450} />
+            <div className="mb-6">
+              <ChartViewer chartData={ratingCountData} height={isMobile ? 350 : 450} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}
 
           {/* Seventh paragraph - Mood Distribution by Narrative Focus */}
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             This mood segmentation reveals a clear psychological divergence in how readers experience different
             narrative structures. Character-Driven stories evoke strong emotional and hopeful responses, suggesting
             readers engage empathetically and seek inner transformation. Mixed narratives strike a balance between
@@ -347,29 +357,32 @@ export function AnatomyTab() {
 
           {/* Seventh Chart */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : moodDistributionData ? (
-            <div className="mb-8">
-              <ChartViewer chartData={moodDistributionData} height={500} />
+            <div className="mb-6">
+              <ChartViewer chartData={moodDistributionData} height={isMobile ? 400 : 500} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}
 
           {/* New Section - The Spine of the Story */}
-          <h2 id="spine-story" className="text-xl md:text-2xl font-semibold mt-12 mb-6 text-white scroll-mt-32">
+          <h2
+            id="spine-story"
+            className={`${isMobile ? "text-xl" : "text-xl md:text-2xl"} font-semibold mt-10 mb-4 text-white scroll-mt-32`}
+          >
             The Spine of the Story: How Narrative Structure Shapes Reader Engagement
           </h2>
 
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Fragmented narrative structures - stories that break away from strict chronological order and follow a less
             predictable, non-linear flow - performed significantly better in reader approval and engagement than their
             linear counterparts. Among them, fragmented stories told through a single, consistent point of view stood
@@ -382,19 +395,19 @@ export function AnatomyTab() {
 
           {/* New Chart - Structure Approval Engagement */}
           {isLoading ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
             </div>
           ) : error ? (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Error: {error}</p>
             </div>
           ) : structureApprovalData ? (
-            <div className="mb-8">
+            <div className="mb-6">
               <ChartViewer chartData={structureApprovalData} height={450} />
             </div>
           ) : (
-            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
             </div>
           )}

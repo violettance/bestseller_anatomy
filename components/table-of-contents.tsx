@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useMediaQuery } from "@/hooks/use-mobile"
 
 interface Section {
   id: string
@@ -14,11 +15,17 @@ interface TableOfContentsProps {
 }
 
 export function TableOfContents({ sections }: TableOfContentsProps) {
-  // Start with the menu open by default
-  const [isOpen, setIsOpen] = useState(true)
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  // Start with the menu closed on mobile, open on desktop
+  const [isOpen, setIsOpen] = useState(!isMobile)
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Update isOpen state when screen size changes
+  useEffect(() => {
+    setIsOpen(!isMobile)
+  }, [isMobile])
 
   // Toggle the menu
   const toggleMenu = () => {
@@ -37,6 +44,11 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
 
       // Perform the scroll
       element.scrollIntoView({ behavior: "smooth" })
+
+      // Close menu on mobile after clicking
+      if (isMobile) {
+        setIsOpen(false)
+      }
 
       // Clear any existing timeout
       if (scrollTimeoutRef.current) {
@@ -88,12 +100,14 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
   }, [sections, activeSection, isProgrammaticScroll])
 
   return (
-    <div className="fixed left-6 top-32 z-50 md:left-12">
+    <div className={`fixed ${isMobile ? "bottom-4 right-4 z-50" : "left-6 top-32 z-50 md:left-12"}`}>
       <div className="flex">
         {/* Table of contents panel */}
         <div
-          className={`bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl h-auto max-h-[80vh] overflow-y-auto transition-all duration-300 ease-in-out ${
-            isOpen ? "w-72 opacity-100" : "w-0 opacity-0 invisible"
+          className={`bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl overflow-y-auto transition-all duration-300 ease-in-out ${
+            isOpen
+              ? `opacity-100 ${isMobile ? "fixed bottom-16 left-4 right-4 max-h-[70vh]" : "w-72 h-auto max-h-[80vh]"}`
+              : "w-0 opacity-0 invisible"
           }`}
         >
           <div className="p-5">
@@ -108,12 +122,12 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
                 <X size={18} />
               </Button>
             </div>
-            <ul className="space-y-4">
+            <ul className="space-y-3">
               {sections.map((section) => (
                 <li key={section.id}>
                   <button
                     onClick={() => scrollToSection(section.id)}
-                    className={`text-left w-full px-4 py-2.5 rounded-md transition-colors ${
+                    className={`text-left w-full px-3 py-2 rounded-md transition-colors ${
                       activeSection === section.id
                         ? "bg-[#8b5cf6] text-white font-medium"
                         : "text-zinc-300 hover:bg-zinc-700 hover:text-white"
@@ -133,7 +147,7 @@ export function TableOfContents({ sections }: TableOfContentsProps) {
             variant="outline"
             size="icon"
             onClick={toggleMenu}
-            className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white rounded-lg h-12 w-12 shadow-lg ml-2"
+            className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white rounded-full h-12 w-12 shadow-lg"
           >
             <Menu size={20} />
           </Button>

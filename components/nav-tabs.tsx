@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { BookOpen, BookPlus, Clock } from "lucide-react"
+import { useMediaQuery } from "@/hooks/use-mobile"
 
 interface NavTabsProps {
   activeTab: string
@@ -9,8 +10,10 @@ interface NavTabsProps {
 }
 
 export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
+  const isMobile = useMediaQuery("(max-width: 768px)")
+
   return (
-    <div className="flex justify-end space-x-2">
+    <div className={`flex ${isMobile ? "flex-col space-y-2" : "justify-end space-x-2"}`}>
       <Button
         variant={activeTab === "anatomy" ? "default" : "outline"}
         className={
