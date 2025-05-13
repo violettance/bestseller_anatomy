@@ -61,6 +61,53 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
     })
   }
 
+  // Style axis labels and grid lines
+  if (processedData.layout.xaxis) {
+    processedData.layout.xaxis = {
+      ...processedData.layout.xaxis,
+      gridcolor: "#3f3f46",
+      linecolor: "#3f3f46",
+      tickfont: {
+        color: "#e4e4e7",
+      },
+      title: {
+        ...processedData.layout.xaxis.title,
+        font: {
+          color: "#e4e4e7",
+        },
+      },
+    }
+  }
+
+  if (processedData.layout.yaxis) {
+    processedData.layout.yaxis = {
+      ...processedData.layout.yaxis,
+      gridcolor: "#3f3f46",
+      linecolor: "#3f3f46",
+      tickfont: {
+        color: "#e4e4e7",
+      },
+      title: {
+        ...processedData.layout.yaxis.title,
+        font: {
+          color: "#e4e4e7",
+        },
+      },
+    }
+  }
+
+  // Style legend if present
+  if (processedData.layout.legend) {
+    processedData.layout.legend = {
+      ...processedData.layout.legend,
+      font: {
+        color: "#e4e4e7",
+      },
+      bgcolor: "rgba(39, 39, 42, 0.8)",
+      bordercolor: "#3f3f46",
+    }
+  }
+
   return (
     <div className={`bg-zinc-800 p-4 rounded-lg ${className}`}>
       <Plot

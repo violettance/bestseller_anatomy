@@ -12,6 +12,7 @@ export function AnatomyTab() {
   const [chapterCountData, setChapterCountData] = useState<any>(null)
   const [ratingCountData, setRatingCountData] = useState<any>(null)
   const [moodDistributionData, setMoodDistributionData] = useState<any>(null)
+  const [structureApprovalData, setStructureApprovalData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,6 +30,10 @@ export function AnatomyTab() {
       id: "cast-canvas",
       title: "The Cast and the Canvas",
     },
+    {
+      id: "spine-story",
+      title: "The Spine of the Story",
+    },
   ]
 
   useEffect(() => {
@@ -44,6 +49,7 @@ export function AnatomyTab() {
           chapterCountResponse,
           ratingCountResponse,
           moodDistributionResponse,
+          structureApprovalResponse,
         ] = await Promise.all([
           fetch("/data/charts/readability_flesch_kincaid.json"),
           fetch("/data/charts/readability_quadrant_chart.json"),
@@ -52,6 +58,7 @@ export function AnatomyTab() {
           fetch("/data/charts/character_chapter_count_by_focus.json"),
           fetch("/data/charts/character_rating_count_by_focus.json"),
           fetch("/data/charts/character_mood_distribution.json"),
+          fetch("/data/charts/structure_approval_engagement.json"),
         ])
 
         if (!readabilityResponse.ok) {
@@ -82,6 +89,10 @@ export function AnatomyTab() {
           throw new Error(`Failed to load mood distribution chart data: ${moodDistributionResponse.statusText}`)
         }
 
+        if (!structureApprovalResponse.ok) {
+          throw new Error(`Failed to load structure approval chart data: ${structureApprovalResponse.statusText}`)
+        }
+
         const readabilityData = await readabilityResponse.json()
         const quadrantData = await quadrantResponse.json()
         const readingTimeData = await readingTimeResponse.json()
@@ -89,6 +100,7 @@ export function AnatomyTab() {
         const chapterCountData = await chapterCountResponse.json()
         const ratingCountData = await ratingCountResponse.json()
         const moodDistributionData = await moodDistributionResponse.json()
+        const structureApprovalData = await structureApprovalResponse.json()
 
         setReadabilityData(readabilityData)
         setQuadrantData(quadrantData)
@@ -97,6 +109,7 @@ export function AnatomyTab() {
         setChapterCountData(chapterCountData)
         setRatingCountData(ratingCountData)
         setMoodDistributionData(moodDistributionData)
+        setStructureApprovalData(structureApprovalData)
         setIsLoading(false)
       } catch (error) {
         console.error("Failed to load chart data:", error)
@@ -336,6 +349,41 @@ export function AnatomyTab() {
           ) : moodDistributionData ? (
             <div className="mb-8">
               <ChartViewer chartData={moodDistributionData} height={500} />
+            </div>
+          ) : (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+              <p className="text-zinc-400">No chart data available</p>
+            </div>
+          )}
+
+          {/* New Section - The Spine of the Story */}
+          <h2 id="spine-story" className="text-xl md:text-2xl font-semibold mt-12 mb-6 text-white scroll-mt-32">
+            The Spine of the Story: How Narrative Structure Shapes Reader Engagement
+          </h2>
+
+          <p className="text-lg text-zinc-300 mb-8">
+            Fragmented narrative structures - stories that break away from strict chronological order and follow a less
+            predictable, non-linear flow - performed significantly better in reader approval and engagement than their
+            linear counterparts. Among them, fragmented stories told through a single, consistent point of view stood
+            out as the most favored. This indicates that readers respond most positively when narrative unpredictability
+            is combined with emotional stability. While linear and single-perspective formats remain the most commonly
+            used, their lower ratings suggest that familiarity in form does not guarantee satisfaction. The data points
+            to a core reader preference: keep the voice steady so I can stay connected, but let the structure surprise
+            me so I don't get bored.
+          </p>
+
+          {/* New Chart - Structure Approval Engagement */}
+          {isLoading ? (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+              <p className="text-zinc-400">Loading chart data...</p>
+            </div>
+          ) : error ? (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
+              <p className="text-zinc-400">Error: {error}</p>
+            </div>
+          ) : structureApprovalData ? (
+            <div className="mb-8">
+              <ChartViewer chartData={structureApprovalData} height={450} />
             </div>
           ) : (
             <div className="bg-zinc-800 p-4 rounded-lg h-[400px] flex items-center justify-center mb-8">
