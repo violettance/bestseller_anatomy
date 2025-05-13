@@ -1,6 +1,7 @@
 "use client"
 
 import { ChartViewer } from "@/components/chart-viewer"
+import { PodcastPlayer } from "@/components/podcast-player"
 import { TableOfContents } from "@/components/table-of-contents"
 import { useEffect, useState } from "react"
 
@@ -112,7 +113,7 @@ export function AnatomyTab() {
         setStructureApprovalData(structureApprovalData)
         setIsLoading(false)
       } catch (error) {
-        console.error("Failed to load chart data:", error)
+        console.error("Failed toload chart data:", error)
         setError(error instanceof Error ? error.message : "Unknown error")
         setIsLoading(false)
       }
@@ -142,6 +143,13 @@ export function AnatomyTab() {
             decode the "DNA" of bestselling narratives. This exploration focuses on data-driven patterns and artistic
             choices that appear to transform a good story into an unforgettable, chart-topping experience.
           </p>
+
+          {/* Podcast Player */}
+          <PodcastPlayer
+            spotifyUrl="https://open.spotify.com/episode/0VUkAMSWPEDEjaGNjG1vGC?si=a9h0mEtVRCWiQ4LnLdf8TA"
+            title="The Open Door: Making Complex Stories Approachable"
+            className="my-10"
+          />
 
           <h2 id="open-door" className="text-xl md:text-2xl font-semibold mt-12 mb-6 text-white scroll-mt-32">
             The Open Door: How Bestsellers Make Complex Stories Approachable
