@@ -6,8 +6,7 @@ import { TableOfContents } from "@/components/table-of-contents"
 import { useEffect, useState, useMemo } from "react"
 import { useMediaQuery } from "@/hooks/use-mobile"
 import { fetchChartData } from "@/lib/supabase"
-import { Clock, RefreshCw } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Clock } from "lucide-react"
 
 // Define chart data type for better type safety
 interface ChartData {
@@ -22,7 +21,6 @@ export function AnatomyTab() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [chartData, setChartData] = useState<Record<string, ChartData | null>>({})
-  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Calculate estimated reading time
   const estimatedReadingTime = useMemo(() => {
@@ -89,45 +87,40 @@ export function AnatomyTab() {
     "feature_importance_rating_count",
   ]
 
-  // Function to load chart data
-  const loadChartData = async () => {
-    try {
-      setIsLoading(true)
-      setIsRefreshing(true)
-      console.log("Starting to load chart data...")
-
-      // Create an object to store all chart data
-      const chartDataObj: Record<string, ChartData | null> = {}
-
-      // Load each chart individually to prevent one failure from affecting others
-      for (const chartName of chartNames) {
-        try {
-          console.log(`Loading chart: ${chartName}`)
-          const data = await fetchChartData(chartName)
-          chartDataObj[chartName] = data
-          console.log(`Successfully loaded chart: ${chartName}`)
-        } catch (err) {
-          console.error(`Failed to load chart ${chartName}:`, err)
-          chartDataObj[chartName] = null
-        }
-      }
-
-      // Update state with all chart data
-      setChartData(chartDataObj)
-      setIsLoading(false)
-      setIsRefreshing(false)
-      setError(null)
-      console.log("Finished loading all charts")
-    } catch (error) {
-      console.error("Error in chart loading process:", error)
-      setError(error instanceof Error ? error.message : "Unknown error")
-      setIsLoading(false)
-      setIsRefreshing(false)
-    }
-  }
-
-  // Load chart data on component mount
   useEffect(() => {
+    // Load chart data from Supabase
+    const loadChartData = async () => {
+      try {
+        setIsLoading(true)
+        console.log("Starting to load chart data...")
+
+        // Create an object to store all chart data
+        const chartDataObj: Record<string, ChartData | null> = {}
+
+        // Load each chart individually to prevent one failure from affecting others
+        for (const chartName of chartNames) {
+          try {
+            console.log(`Loading chart: ${chartName}`)
+            const data = await fetchChartData(chartName)
+            chartDataObj[chartName] = data
+            console.log(`Successfully loaded chart: ${chartName}`)
+          } catch (err) {
+            console.error(`Failed to load chart ${chartName}:`, err)
+            chartDataObj[chartName] = null
+          }
+        }
+
+        // Update state with all chart data
+        setChartData(chartDataObj)
+        setIsLoading(false)
+        console.log("Finished loading all charts")
+      } catch (error) {
+        console.error("Error in chart loading process:", error)
+        setError(error instanceof Error ? error.message : "Unknown error")
+        setIsLoading(false)
+      }
+    }
+
     loadChartData()
   }, [])
 
@@ -141,18 +134,8 @@ export function AnatomyTab() {
       )
     } else if (error) {
       return (
-        <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex flex-col items-center justify-center mb-6">
-          <p className="text-zinc-400 mb-4">Error: {error}</p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={loadChartData}
-            disabled={isRefreshing}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-            Retry Loading Charts
-          </Button>
+        <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
+          <p className="text-zinc-400">Error: {error}</p>
         </div>
       )
     } else if (chartData[chartName]) {
@@ -163,18 +146,8 @@ export function AnatomyTab() {
       )
     } else {
       return (
-        <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex flex-col items-center justify-center mb-6">
-          <p className="text-zinc-400 mb-4">Chart data not available for {chartName}</p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={loadChartData}
-            disabled={isRefreshing}
-            className="flex items-center gap-2"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-            Retry Loading Charts
-          </Button>
+        <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
+          <p className="text-zinc-400">Chart data not available for {chartName}</p>
         </div>
       )
     }
@@ -187,25 +160,12 @@ export function AnatomyTab() {
 
       {/* Main Content */}
       <div className="pt-4">
-        <div className="flex justify-between items-start mb-2">
-          <h1
-            id="introduction"
-            className={`${isMobile ? "text-2xl" : "text-3xl md:text-4xl"} font-bold text-white leading-tight scroll-mt-32`}
-          >
-            The Bestseller's Blueprint: Unveiling the Secrets Behind Today's Most Captivating Stories
-          </h1>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={loadChartData}
-            disabled={isRefreshing}
-            className="flex items-center gap-2 mt-2 ml-4"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-            {isRefreshing ? "Refreshing..." : "Refresh Charts"}
-          </Button>
-        </div>
+        <h1
+          id="introduction"
+          className={`${isMobile ? "text-2xl" : "text-3xl md:text-4xl"} font-bold mb-2 text-white leading-tight scroll-mt-32`}
+        >
+          The Bestseller's Blueprint: Unveiling the Secrets Behind Today's Most Captivating Stories
+        </h1>
 
         {/* Estimated Reading Time */}
         <div className="flex items-center mb-6 text-zinc-400">
@@ -546,7 +506,7 @@ export function AnatomyTab() {
           </p>
 
           {/* Climax Momentum By Narrative Focus Chart */}
-          {renderChart("timing_climax_momentum_by_narrative_focus", isMobile ? 350 : 450)}
+          {renderChart("timing_climax_momentum_by_genre", isMobile ? 350 : 450)}
 
           {/* The Texture of Language Section */}
           <h2
