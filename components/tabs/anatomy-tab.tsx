@@ -16,6 +16,8 @@ export function AnatomyTab() {
   const [ratingCountData, setRatingCountData] = useState<any>(null)
   const [moodDistributionData, setMoodDistributionData] = useState<any>(null)
   const [structureApprovalData, setStructureApprovalData] = useState<any>(null)
+  const [characterFeaturesData, setCharacterFeaturesData] = useState<any>(null)
+  const [temporalEngagementData, setTemporalEngagementData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,7 +39,100 @@ export function AnatomyTab() {
       id: "spine-story",
       title: "The Spine of the Story",
     },
+    {
+      id: "flow-fiction",
+      title: "The Flow of Fiction",
+    },
   ]
+
+  // Directly embed the temporal engagement data to avoid loading issues
+  const embeddedTemporalEngagementData = {
+    data: [
+      {
+        hovertemplate:
+          "=%{x}\u003cbr\u003eAvg. Rating Count=%{marker.color}\u003cbr\u003erating_count_label=%{text}\u003cextra\u003e\u003c\u002fextra\u003e",
+        legendgroup: "",
+        marker: {
+          color: [9000, 8000, 7000, 5000],
+          coloraxis: "coloraxis",
+          pattern: {
+            shape: "",
+          },
+        },
+        name: "",
+        orientation: "v",
+        showlegend: false,
+        text: ["40k", "34k", "27k", "11k"],
+        textposition: "outside",
+        x: [
+          "Low Motion & High Action",
+          "High Motion & High Action",
+          "High Motion & Low Action",
+          "Low Motion & Low Action",
+        ],
+        xaxis: "x",
+        y: [9000, 8000, 7000, 5000],
+        yaxis: "y",
+        type: "bar",
+        cliponaxis: false,
+      },
+    ],
+    layout: {
+      xaxis: {
+        anchor: "y",
+        domain: [0.0, 1.0],
+        title: {
+          text: "",
+        },
+        showticklabels: true,
+        tickfont: {
+          color: "#e4e4e7",
+        },
+      },
+      yaxis: {
+        anchor: "x",
+        domain: [0.0, 1.0],
+        title: {
+          text: "",
+        },
+        showticklabels: false,
+        showgrid: false,
+      },
+      coloraxis: {
+        colorbar: {
+          title: {
+            text: "Avg. Rating Count",
+          },
+        },
+        colorscale: [
+          [0.0, "#dcd7fa"],
+          [0.5, "#b29ef2"],
+          [1.0, "#8b5cf6"],
+        ],
+        showscale: false,
+      },
+      legend: {
+        tracegroupgap: 0,
+      },
+      margin: {
+        t: 60,
+      },
+      barmode: "relative",
+      font: {
+        size: 13,
+        color: "#e4e4e7",
+      },
+      title: {
+        text: "Reader Engagement by Narrative Dynamics",
+        font: {
+          color: "#e4e4e7",
+          size: 16,
+        },
+      },
+      paper_bgcolor: "rgba(39, 39, 42, 0.8)",
+      plot_bgcolor: "rgba(39, 39, 42, 0.8)",
+    },
+  }
 
   useEffect(() => {
     // Load the chart data
@@ -53,6 +148,7 @@ export function AnatomyTab() {
           ratingCountResponse,
           moodDistributionResponse,
           structureApprovalResponse,
+          characterFeaturesResponse,
         ] = await Promise.all([
           fetch("/data/charts/readability_flesch_kincaid.json"),
           fetch("/data/charts/readability_quadrant_chart.json"),
@@ -62,40 +158,39 @@ export function AnatomyTab() {
           fetch("/data/charts/character_rating_count_by_focus.json"),
           fetch("/data/charts/character_mood_distribution.json"),
           fetch("/data/charts/structure_approval_engagement.json"),
+          fetch("/data/charts/character_related_features.json"),
         ])
 
+        // Check responses
         if (!readabilityResponse.ok) {
           throw new Error(`Failed to load readability chart data: ${readabilityResponse.statusText}`)
         }
-
         if (!quadrantResponse.ok) {
           throw new Error(`Failed to load quadrant chart data: ${quadrantResponse.statusText}`)
         }
-
         if (!readingTimeResponse.ok) {
           throw new Error(`Failed to load reading time chart data: ${readingTimeResponse.statusText}`)
         }
-
         if (!pronounStyleResponse.ok) {
           throw new Error(`Failed to load pronoun style chart data: ${pronounStyleResponse.statusText}`)
         }
-
         if (!chapterCountResponse.ok) {
           throw new Error(`Failed to load chapter count chart data: ${chapterCountResponse.statusText}`)
         }
-
         if (!ratingCountResponse.ok) {
           throw new Error(`Failed to load rating count chart data: ${ratingCountResponse.statusText}`)
         }
-
         if (!moodDistributionResponse.ok) {
           throw new Error(`Failed to load mood distribution chart data: ${moodDistributionResponse.statusText}`)
         }
-
         if (!structureApprovalResponse.ok) {
           throw new Error(`Failed to load structure approval chart data: ${structureApprovalResponse.statusText}`)
         }
+        if (!characterFeaturesResponse.ok) {
+          throw new Error(`Failed to load character features chart data: ${characterFeaturesResponse.statusText}`)
+        }
 
+        // Parse JSON responses
         const readabilityData = await readabilityResponse.json()
         const quadrantData = await quadrantResponse.json()
         const readingTimeData = await readingTimeResponse.json()
@@ -104,7 +199,9 @@ export function AnatomyTab() {
         const ratingCountData = await ratingCountResponse.json()
         const moodDistributionData = await moodDistributionResponse.json()
         const structureApprovalData = await structureApprovalResponse.json()
+        const characterFeaturesData = await characterFeaturesResponse.json()
 
+        // Set state for existing data
         setReadabilityData(readabilityData)
         setQuadrantData(quadrantData)
         setReadingTimeData(readingTimeData)
@@ -113,6 +210,11 @@ export function AnatomyTab() {
         setRatingCountData(ratingCountData)
         setMoodDistributionData(moodDistributionData)
         setStructureApprovalData(structureApprovalData)
+        setCharacterFeaturesData(characterFeaturesData)
+
+        // Use the embedded temporal engagement data
+        setTemporalEngagementData(embeddedTemporalEngagementData)
+
         setIsLoading(false)
       } catch (error) {
         console.error("Failed to load chart data:", error)
@@ -161,6 +263,10 @@ export function AnatomyTab() {
           >
             The Open Door: How Bestsellers Make Complex Stories Approachable
           </h2>
+
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-4 italic`}>
+            Captivating stories often begin by ensuring their complex narratives are made approachable.
+          </p>
 
           <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Most bestselling books are written at a readability level between 4th and 5th grade, indicating that clear,
@@ -221,10 +327,9 @@ export function AnatomyTab() {
 
           {/* Third paragraph */}
           <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
-            Genres like Fantasy, Historical Fiction, and Young Adult require significantly more reading time than the
-            overall average of 9.57h, indicating their tendency toward longer or denser narratives. In contrast, Drama,
-            Crime Fiction, and Magical Realism fall well below the average, suggesting relatively shorter or more
-            accessible content.
+            Genres like Fantasy and Romance require significantly more reading time than the overall average of 9.5h,
+            indicating their tendency toward longer or denser narratives. In contrast, Drama, Mystery, and Thriller fall
+            well below the average, suggesting relatively shorter or more accessible content.
           </p>
 
           {/* Third Chart */}
@@ -254,6 +359,42 @@ export function AnatomyTab() {
             The Cast and the Canvas: How Bestsellers Populate Rich Worlds with Resonant Characters
           </h2>
 
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-4 italic`}>
+            Once approachability is established, attention shifts to the resonant characters and rich worlds presented.
+          </p>
+
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
+            A pronounced tendency has been observed among recent bestselling novels to foreground key characterological
+            dimensions such as strong character development, affective appeal, diversity within the cast, and the
+            explicit narrative integration of character flaws. The prevalence of affirmative responses across all these
+            axes suggests a market-driven prioritization of multidimensional, relatable, and psychologically complex
+            protagonists. Ambiguity or absence of these features is notably rare, indicating a clear alignment between
+            commercial literary success and the systematic incorporation of deep character work. These findings
+            underscore the extent to which contemporary fiction is structured around inclusivity and emotional
+            resonance, with robust character construction serving as a critical vector for reader engagement and broader
+            market viability.
+          </p>
+
+          {/* Character Related Features Chart */}
+          {isLoading ? (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
+              <p className="text-zinc-400">Loading chart data...</p>
+            </div>
+          ) : error ? (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
+              <p className="text-zinc-400">Error: {error}</p>
+            </div>
+          ) : characterFeaturesData ? (
+            <div className="mb-6">
+              <ChartViewer chartData={characterFeaturesData} height={isMobile ? 350 : 450} />
+            </div>
+          ) : (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
+              <p className="text-zinc-400">No chart data available</p>
+            </div>
+          )}
+
+          {/* Fourth Chart */}
           <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Narrative perspective choices in bestselling fiction suggest a strategic balance between intimacy and
             breadth. The dominance of "External Observer" and "Mixed Voice" styles points to a tendency among popular
@@ -264,7 +405,6 @@ export function AnatomyTab() {
             controlled proximity - close enough for empathy, distant enough for scale.
           </p>
 
-          {/* Fourth Chart */}
           {isLoading ? (
             <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">Loading chart data...</p>
@@ -382,6 +522,11 @@ export function AnatomyTab() {
             The Spine of the Story: How Narrative Structure Shapes Reader Engagement
           </h2>
 
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-4 italic`}>
+            Populating worlds with resonant characters necessitates a narrative structure to effectively shape reader
+            engagement.
+          </p>
+
           <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Fragmented narrative structures - stories that break away from strict chronological order and follow a less
             predictable, non-linear flow - performed significantly better in reader approval and engagement than their
@@ -409,6 +554,41 @@ export function AnatomyTab() {
           ) : (
             <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
               <p className="text-zinc-400">No chart data available</p>
+            </div>
+          )}
+
+          {/* New Section - The Flow of Fiction */}
+          <h2
+            id="flow-fiction"
+            className={`${isMobile ? "text-xl" : "text-xl md:text-2xl"} font-semibold mt-10 mb-4 text-white scroll-mt-32`}
+          >
+            The Flow of Fiction: How Structural Tempo Patterns Define Story Identity
+          </h2>
+
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-4 italic`}>
+            Narrative structure shaping engagement often utilizes distinct structural tempo patterns defining overall
+            story identity.
+          </p>
+
+          <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
+            Reader engagement does not scale linearly with narrative intensity or volume, it scales with narrative
+            precision. Stories that deliver dramatic developments through controlled, measured pacing (low motion, high
+            action) achieve the highest engagement per book and per word, indicating that readers respond more to
+            structural focus than surface activity. In contrast, narratives lacking both momentum and consequential
+            events (low motion, low action) yield the lowest return on attention, even when extended in length. This
+            reveals a core principle of narrative efficiency: tension -not turbulence- sustains interest. While
+            high-motion formats tend to generate broader reach through volume and visibility, it is the strategic timing
+            and clarity of narrative impact that most effectively drive reader response.
+          </p>
+
+          {/* Temporal Reader Engagement Chart */}
+          {isLoading ? (
+            <div className="bg-zinc-800 p-4 rounded-lg h-[300px] flex items-center justify-center mb-6">
+              <p className="text-zinc-400">Loading chart data...</p>
+            </div>
+          ) : (
+            <div className="mb-6">
+              <ChartViewer chartData={embeddedTemporalEngagementData} height={isMobile ? 350 : 450} />
             </div>
           )}
         </div>
