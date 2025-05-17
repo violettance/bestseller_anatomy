@@ -1,11 +1,15 @@
 import { createClient } from "@supabase/supabase-js"
 
-// Use environment variables without hardcoded fallbacks
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
+// Check for environment variables with fallbacks for build time
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://jgxwhdlwdvmzzcvxlgsc.supabase.co"
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
 
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Create Supabase client with error handling
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: false, // Disable session persistence for SSR
+  },
+})
 
 /**
  * Fetch chart data from Supabase storage
@@ -15,6 +19,13 @@ export const supabase = createClient(supabaseUrl, supabaseKey)
 export async function fetchChartData(chartName: string) {
   try {
     console.log(`Fetching chart: ${chartName}.json`)
+
+    // Check if Supabase client is properly initialized
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase credentials are missing")
+      throw new Error("Supabase configuration is incomplete")
+    }
+
     const { data, error } = await supabase.storage.from("charts").download(`/${chartName}.json`)
 
     if (error) {
