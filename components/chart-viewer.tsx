@@ -15,20 +15,33 @@ interface ChartViewerProps {
 export function ChartViewer({ chartData, height = 400, className = "" }: ChartViewerProps) {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
+  // Safety check for null or undefined chart data
+  if (!chartData || !chartData.data || !chartData.layout) {
+    console.error("Invalid chart data provided to ChartViewer:", chartData)
+    return (
+      <div
+        className={`bg-zinc-800 p-4 rounded-lg flex items-center justify-center ${className}`}
+        style={{ height: `${height}px` }}
+      >
+        <p className="text-zinc-400">Chart data is invalid or incomplete</p>
+      </div>
+    )
+  }
+
   // Create a deep copy of the chart data to avoid modifying the original
   const processedData = JSON.parse(JSON.stringify(chartData))
 
-  // Apply dark theme styling if not already present
-  if (!processedData.layout.paper_bgcolor) {
-    processedData.layout.paper_bgcolor = "rgba(39, 39, 42, 0.8)"
-    processedData.layout.plot_bgcolor = "rgba(39, 39, 42, 0.8)"
-  }
+  // Check if this is a polar/spider chart
+  const isSpiderChart = processedData.data?.some((d: any) => d.type === "scatterpolar")
 
-  if (!processedData.layout.font?.color) {
-    processedData.layout.font = {
-      ...processedData.layout.font,
-      color: "#e4e4e7",
-    }
+  // Apply consistent dark theme styling for all charts
+  // Use the standard dark gray background for all charts
+  processedData.layout.paper_bgcolor = "rgba(39, 39, 42, 0.8)"
+  processedData.layout.plot_bgcolor = "rgba(39, 39, 42, 0.8)"
+
+  processedData.layout.font = {
+    ...processedData.layout.font,
+    color: "#e4e4e7",
   }
 
   // Ensure title styling is consistent
@@ -47,7 +60,7 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
       font: {
         ...(processedData.layout.title.font || {}),
         size: isMobile ? 14 : processedData.layout.title.font?.size || 16,
-        color: processedData.layout.title.font?.color || "#e4e4e7",
+        color: "#e4e4e7",
       },
       x: processedData.layout.title.x || 0.07,
     }
@@ -56,11 +69,9 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
   // Style dropdown menus if present
   if (processedData.layout.updatemenus) {
     processedData.layout.updatemenus.forEach((menu: any) => {
-      if (!menu.bgcolor) {
-        menu.bgcolor = "#27272a"
-        menu.bordercolor = "#3f3f46"
-        menu.font = { color: "#e4e4e7" }
-      }
+      menu.bgcolor = "#27272a"
+      menu.bordercolor = "#3f3f46"
+      menu.font = { color: "#e4e4e7" }
 
       // Adjust position for mobile
       if (isMobile) {
@@ -121,62 +132,80 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
     }
   }
 
-  // Special handling for structure approval chart
-  if (
-    processedData.data &&
-    (processedData.data.some((d: any) => d.type === "bar" && d.name === "Approval Rating") ||
-      processedData.data.some((d: any) => d.type === "scatter" && d.mode === "markers") ||
-      processedData.layout.title?.text?.includes("Narrative Structures"))
-  ) {
-    // This is the structure approval chart
-    const chartHeight = isMobile ? 400 : height
+  // Fix annotations if present
+  if (processedData.layout.annotations) {
+    processedData.layout.annotations = processedData.layout.annotations.map((annotation: any) => ({
+      ...annotation,
+      font: {
+        ...annotation.font,
+        color: "#e4e4e7",
+      },
+    }))
+  }
 
-    // For mobile, hide the legend and simplify the chart
-    if (isMobile) {
-      // Hide legend on mobile
-      processedData.layout.showlegend = false
-
-      // Simplify axis titles
-      if (processedData.layout.xaxis && processedData.layout.xaxis.title) {
-        processedData.layout.xaxis.title.text = "Approval"
-      }
-
-      if (processedData.layout.yaxis && processedData.layout.yaxis.title) {
-        processedData.layout.yaxis.title.text = "Engagement"
-      }
-
-      // Reduce margins to give more space to the bubbles
-      processedData.layout.margin = {
-        t: 40,
-        r: 10,
-        l: 40,
-        b: 40,
-      }
-
-      // Make bubbles more visible
-      if (processedData.data) {
-        processedData.data.forEach((trace: any) => {
-          if (trace.mode === "markers") {
-            // Ensure markers are visible
-            trace.marker = {
-              ...trace.marker,
-              opacity: 0.8,
-              line: {
-                width: 1,
-                color: "#fff",
-              },
-            }
-
-            // Remove text labels on mobile
-            trace.text = null
-            trace.textposition = null
-            trace.hoverinfo = "text"
-            trace.hovertext = trace.name
-          }
-        })
+  // Special handling for spider/radar charts
+  if (isSpiderChart) {
+    // Fix polar axis styling
+    if (processedData.layout.polar) {
+      processedData.layout.polar = {
+        ...processedData.layout.polar,
+        bgcolor: "rgba(39, 39, 42, 0.8)", // Match the standard dark gray
+        angularaxis: {
+          ...processedData.layout.polar.angularaxis,
+          color: "#e4e4e7",
+          gridcolor: "#3f3f46",
+          linecolor: "#3f3f46",
+          tickfont: {
+            color: "#e4e4e7",
+          },
+        },
+        radialaxis: {
+          ...processedData.layout.polar.radialaxis,
+          color: "#e4e4e7",
+          gridcolor: "#3f3f46",
+          linecolor: "#3f3f46",
+          tickfont: {
+            color: "#e4e4e7",
+          },
+        },
       }
     }
 
+    // Ensure only one trace is visible at a time for dropdown selections
+    if (processedData.data && Array.isArray(processedData.data)) {
+      const firstVisibleIndex = processedData.data.findIndex((trace: any) => trace.visible === true)
+      processedData.data.forEach((trace: any, index: number) => {
+        // If no trace is visible, make the first one visible
+        if (firstVisibleIndex === -1 && index === 0) {
+          trace.visible = true
+        } else if (firstVisibleIndex !== -1) {
+          // Keep the currently visible trace visible, hide others
+          trace.visible = index === firstVisibleIndex
+        }
+
+        // Ensure consistent styling
+        if (trace.fillcolor) {
+          trace.fillcolor = "rgba(139, 92, 246, 0.4)" // Consistent purple fill
+        }
+        if (trace.line) {
+          trace.line.color = "#8b5cf6" // Consistent purple line
+        }
+      })
+    }
+  }
+
+  // Fix alignment issues by ensuring proper margins and container styling
+  const chartMargins = {
+    t: isMobile ? 50 : 40,
+    r: isMobile ? 20 : 30,
+    l: isMobile ? 40 : 50,
+    b: isMobile ? 40 : 50,
+  }
+
+  // Adjust height for mobile
+  const chartHeight = isMobile ? Math.min(height, 350) : height
+
+  try {
     return (
       <div className={`bg-zinc-800 p-4 rounded-lg ${className}`}>
         <Plot
@@ -184,44 +213,30 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
           layout={{
             ...processedData.layout,
             autosize: true,
-            height: chartHeight,
+            margin: {
+              ...(processedData.layout.margin || {}),
+              ...chartMargins,
+            },
             width: undefined, // Let it be responsive
+            height: chartHeight,
           }}
           style={{ width: "100%", height: `${chartHeight}px` }}
           config={{
             responsive: true,
-            displayModeBar: !isMobile,
+            displayModeBar: !isMobile, // Hide mode bar on mobile
           }}
         />
       </div>
     )
+  } catch (error) {
+    console.error("Error rendering chart:", error)
+    return (
+      <div
+        className={`bg-zinc-800 p-4 rounded-lg flex items-center justify-center ${className}`}
+        style={{ height: `${height}px` }}
+      >
+        <p className="text-zinc-400">Error rendering chart</p>
+      </div>
+    )
   }
-
-  // Adjust height for mobile for other charts
-  const chartHeight = isMobile ? Math.min(height, 350) : height
-
-  return (
-    <div className={`bg-zinc-800 p-4 rounded-lg ${className}`}>
-      <Plot
-        data={processedData.data}
-        layout={{
-          ...processedData.layout,
-          autosize: true,
-          margin: {
-            ...(processedData.layout.margin || {}),
-            t: isMobile ? 50 : 40,
-            r: isMobile ? 15 : 20,
-            l: isMobile ? 30 : 40,
-            b: isMobile ? 30 : 40,
-          },
-          width: undefined, // Let it be responsive
-        }}
-        style={{ width: "100%", height: `${chartHeight}px` }}
-        config={{
-          responsive: true,
-          displayModeBar: !isMobile, // Hide mode bar on mobile
-        }}
-      />
-    </div>
-  )
 }
