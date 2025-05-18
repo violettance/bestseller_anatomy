@@ -220,7 +220,7 @@ export function AnatomyTab() {
             preference - it reflects an intentional calibration of cognitive effort. Authors and publishers seem to
             recognize that today's readers value clarity and pace; they want to engage emotionally without wading
             through dense or overly elaborate prose. In a saturated market, it's the stories that respect the reader's
-            attention span—without sacrificing substance - that rise to the top.
+            attention span - without sacrificing substance - that rise to the top.
           </p>
 
           {/* Readability Quadrant Chart */}
@@ -308,12 +308,12 @@ export function AnatomyTab() {
           {/* Seventh paragraph - Mood Distribution by Narrative Focus */}
           <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             This mood segmentation reveals a clear psychological divergence in how readers experience different
-            narrative structures. Character-Driven stories evoke strong emotional and hopeful responses, suggesting
+            narrative structures. Character-driven stories evoke strong emotional and hopeful responses, suggesting
             readers engage empathetically and seek inner transformation. Mixed narratives strike a balance between
-            affect and action, indicating versatility in appealing to varied reader preferences. Plot-Driven stories, on
+            affect and action, indicating versatility in appealing to varied reader preferences. Plot-driven stories, on
             the other hand, register minimal emotional depth, emphasizing external tension and adventure. This skew
             toward surface-level intensity may explain their broader commercial utility but potentially lower long-term
-            resonance. These patterns underscore how narrative focus doesn't just guide storytelling—it actively shapes
+            resonance. These patterns underscore how narrative focus doesn't just guide storytelling - it actively shapes
             emotional investment and reader satisfaction.
           </p>
 
@@ -366,7 +366,7 @@ export function AnatomyTab() {
             action) achieve the highest engagement per book and per word, indicating that readers respond more to
             structural focus than surface activity. In contrast, narratives lacking both momentum and consequential
             events (low motion, low action) yield the lowest return on attention, even when extended in length. This
-            reveals a core principle of narrative efficiency: tension -not turbulence- sustains interest. While
+            reveals a core principle of narrative efficiency: tension - not turbulence - sustains interest. While
             high-motion formats tend to generate broader reach through volume and visibility, it is the strategic timing
             and clarity of narrative impact that most effectively drive reader response.
           </p>
@@ -436,7 +436,7 @@ export function AnatomyTab() {
             bestselling fiction reveals a clear preference for psychological tension over comfort. Moods like
             mysterious, tense, and adventurous dominate reader responses, signaling that ambiguity, risk, and forward
             thrust are perceived as defining features of today's most engaging stories. Meanwhile, traditionally
-            uplifting tones -hopeful, lighthearted, inspiring- trail far behind, suggesting that emotional satisfaction
+            uplifting tones - hopeful, lighthearted, inspiring - trail far behind, suggesting that emotional satisfaction
             is not synonymous with emotional ease. Readers seem to seek out stories that stimulate and unsettle - ones
             that create just enough friction to stay immersive, but never predictable. In this landscape, clarity
             soothes, but tension sticks.
@@ -567,7 +567,7 @@ export function AnatomyTab() {
           <p className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300 mb-6`}>
             Character-driven and mixed narratives distribute sensory cues more evenly across modalities, integrating
             visual, auditory, and tactile elements to build a richer, multi-sensory atmosphere. However, plot-driven
-            stories display an overwhelming reliance on visual cues -nearly 89%- of them are visually dominant, with no
+            stories display an overwhelming reliance on visual cues - nearly 89% - of them are visually dominant, with no
             books led by sound or touch. This striking skew suggests that in fast-paced, event-centric storytelling,
             authors often lean on visual descriptions to maintain clarity and momentum, potentially at the cost of
             sensory diversity. The absence of olfactory and gustatory dominance across all categories further reveals a
@@ -594,7 +594,7 @@ export function AnatomyTab() {
             Stories that immerse readers in emotional depth and track genuine character growth consistently earn the
             highest praise. When narratives invite readers to empathize with complex, evolving protagonists,
             satisfaction and engagement naturally follow. In contrast, books that demand heightened mental effort
-            -through intricate timelines or challenging structures- can create distance, making it harder for readers to
+            - through intricate timelines or challenging structures - can create distance, making it harder for readers to
             fully invest in the story. Excessive urgency, while effective for driving plot, may overwhelm rather than
             captivate, especially if it comes at the expense of emotional connection. Ultimately, it is the balance of
             clarity, relatability, and emotional resonance -not complexity for its own sake- that transforms a book into
