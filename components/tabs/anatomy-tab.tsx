@@ -506,7 +506,7 @@ export function AnatomyTab() {
           </p>
 
           {/* Climax Momentum By Narrative Focus Chart */}
-          {renderChart("timing_climax_momentum_by_narrative_focus.json", isMobile ? 350 : 450)}
+          {renderChart("timing_climax_momentum_by_narrative_focus", isMobile ? 350 : 450)}
 
           {/* The Texture of Language Section */}
           <h2
