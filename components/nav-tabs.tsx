@@ -26,7 +26,15 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
         <BookOpen className="mr-2 h-4 w-4" />
         Anatomy of a Bestseller
       </Button>
-      <Button variant="outline" className="text-zinc-400 cursor-not-allowed rounded-full" disabled>
+      <Button
+        variant={activeTab === "analyze" ? "default" : "outline"}
+        className={
+          activeTab === "analyze"
+            ? "bg-[#8b5cf6] hover:bg-[#7c3aed] rounded-full"
+            : "text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-full"
+        }
+        onClick={() => onTabChange("analyze")}
+      >
         <BookPlus className="mr-2 h-4 w-4" />
         Analyze My Book
       </Button>
