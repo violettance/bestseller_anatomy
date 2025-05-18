@@ -118,7 +118,7 @@ export function AnalyzeTab() {
               Curious how your story holds up?
             </h2>
             <p className="text-zinc-300 mb-4 text-sm md:text-base">
-              Upload your manuscript and get a chapter-by-chapter breakdown of emotional tone, pacing, and reader engagement.
+              See how each chapter performs in terms of tension, emotion, pacing, action & more.
             </p>
             <button
               onClick={openUploadModal}
