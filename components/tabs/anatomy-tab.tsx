@@ -216,35 +216,34 @@ export function AnatomyTab() {
 
         <ul className="list-disc pl-6 space-y-6 mb-6">
           <li className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300`}>
-            <span className="font-bold">Strategic Simplicity Drives Engagement:</span> Bestselling
-            fiction leans heavily into clarity. Most of these books are written at a 5th grade readability level, often
-            combining ease of comprehension with brevity or maintaining moderate complexity while staying structurally
-            concise. This reflects a deliberate reduction of cognitive load-making it easier for readers to stay
-            emotionally connected without feeling overwhelmed. Simplicity, in this context, is a strategic choice rather
-            than a limitation.
+            <span className="font-bold">Strategic Simplicity Drives Engagement:</span> Bestselling fiction leans heavily
+            into clarity. Most of these books are written at a 5th grade readability level, often combining ease of
+            comprehension with brevity or maintaining moderate complexity while staying structurally concise. This
+            reflects a deliberate reduction of cognitive load-making it easier for readers to stay emotionally connected
+            without feeling overwhelmed. Simplicity, in this context, is a strategic choice rather than a limitation.
           </li>
 
           <li className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300`}>
-            <span className="font-bold">Emotional Depth Emerges Through Character:</span> Stories built
-            around multidimensional characters-those with psychological nuance, visible flaws, and emotional
+            <span className="font-bold">Emotional Depth Emerges Through Character:</span> Stories built around
+            multidimensional characters-those with psychological nuance, visible flaws, and emotional
             weight-consistently earn stronger reader engagement. While plot sustains momentum, it's the internal
             architecture of character that drives resonance. What stays with readers isn't just what happens, but how
             deeply they care about who it happens to.
           </li>
 
           <li className={`${isMobile ? "text-base" : "text-lg"} text-zinc-300`}>
-            <span className="font-bold">Precision and Tension Leave a Stronger Mark Than Volume:</span>{" "}
-            The most impactful stories are not necessarily the busiest ones, but those that pair measured pacing with
-            meaningful turns. When tension is delivered with control, its effect lasts longer. A noticeable lean toward
-            darker emotional tones suggests that readers aren't looking for comfort-they're drawn to stories that
-            challenge, unsettle, and ultimately reward them with something memorable.
+            <span className="font-bold">Precision and Tension Leave a Stronger Mark Than Volume:</span> The most
+            impactful stories are not necessarily the busiest ones, but those that pair measured pacing with meaningful
+            turns. When tension is delivered with control, its effect lasts longer. A noticeable lean toward darker
+            emotional tones suggests that readers aren't looking for comfort-they're drawn to stories that challenge,
+            unsettle, and ultimately reward them with something memorable.
           </li>
         </ul>
 
         {/* Cover Image */}
         <div className="mb-6">
           <img
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cover-fJxirQRsDO5HkLM51cTI7gxFsGmqLb.jpeg"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cover-HQCX0FeaRbncrKhBU0XTKkgL7UJNR4.jpeg"
             alt="The Bestseller's Blueprint"
             className="w-full rounded-lg"
           />
@@ -614,7 +613,7 @@ export function AnatomyTab() {
             interpreting genre-based insights.
           </p>
 
-          {/* Follow Me Section - Moved up and made smaller */}
+          {/* Social Links */}
           <div className="flex items-center space-x-4 mb-4">
             <a
               href="https://www.linkedin.com/in/ytu-iremkurt/"

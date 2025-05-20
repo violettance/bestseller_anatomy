@@ -13,7 +13,7 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
   const isMobile = useMediaQuery("(max-width: 768px)")
 
   return (
-    <div className="flex justify-end space-x-2">
+    <div className={`flex ${isMobile ? "flex-col space-y-2" : "justify-end space-x-2"}`}>
       <Button
         variant={activeTab === "anatomy" ? "default" : "outline"}
         className={
@@ -22,10 +22,9 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
             : "text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-full"
         }
         onClick={() => onTabChange("anatomy")}
-        size={isMobile ? "sm" : "default"}
       >
-        <BookOpen className="h-4 w-4" />
-        {!isMobile && <span className="ml-2">Anatomy of a Bestseller</span>}
+        <BookOpen className="mr-2 h-4 w-4" />
+        Anatomy of a Bestseller
       </Button>
       <Button
         variant={activeTab === "analyze" ? "default" : "outline"}
@@ -35,19 +34,13 @@ export function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
             : "text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-full"
         }
         onClick={() => onTabChange("analyze")}
-        size={isMobile ? "sm" : "default"}
       >
-        <BookPlus className="h-4 w-4" />
-        {!isMobile && <span className="ml-2">Analyze My Book</span>}
+        <BookPlus className="mr-2 h-4 w-4" />
+        Analyze My Book
       </Button>
-      <Button
-        variant="outline"
-        className="text-zinc-400 cursor-not-allowed rounded-full"
-        disabled
-        size={isMobile ? "sm" : "default"}
-      >
-        <Clock className="h-4 w-4" />
-        {!isMobile && <span className="ml-2">Coming Soon</span>}
+      <Button variant="outline" className="text-zinc-400 cursor-not-allowed rounded-full" disabled>
+        <Clock className="mr-2 h-4 w-4" />
+        Coming Soon
       </Button>
     </div>
   )
