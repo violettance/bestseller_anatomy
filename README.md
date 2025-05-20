@@ -50,9 +50,11 @@ The core analysis engine is built on extensive research and machine learning mod
 | Deep Learning & NLP | PyTorch, Transformers | BERT-based text analysis and inference |
 | Scientific Computing | NumPy, SciPy | Numerical operations and statistical analysis |
 | Data Processing | Pandas | Data manipulation and analysis |
-| Classical ML & Statistics | scikit-learn | Model preparation and metrics |
+| Classical ML & Statistics | scikit-learn, XGBoost | Model preparation, metrics, and feature importance |
+| Feature Analysis | SHAP (SHapley Additive exPlanations) | Feature importance and model interpretation |
+| Dimensionality Reduction | PCA, UMAP, t-SNE | High-dimensional data visualization and pattern discovery |
 | Language Modeling | SpaCy, Gensim, NLTK | Tokenization, embeddings, word vectors |
-| Visualization | Matplotlib | Statistical plots and analysis visualization |
+| Visualization | Matplotlib, Plotly | Statistical plots, interactive visualizations, and analysis dashboard |
 | System Tools | os, pathlib, json, re, time | File management, regex, debugging |
 | Environment | Google Colab GPU | CUDA acceleration for processing |
 
