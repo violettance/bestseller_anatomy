@@ -123,62 +123,80 @@ export function BookDashboard({ bookTitle = mockBookTitle, isUploaded = false }:
       <div className="h-48 w-full relative">
         {variant === "line" ? (
           <div className="h-full w-full relative">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-              <defs>
-                <linearGradient id={`gradient-${title}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor={color} stopOpacity="0.8" />
-                  <stop offset="100%" stopColor={color} stopOpacity="0.2" />
-                </linearGradient>
-              </defs>
-              {/* Arka plan alanı */}
-              <path
-                fill="#2b213f"
-                d={`M0,${100 - (data[0]?.[dataKey] || 0) * 100} ${data
-                  .map((item: any, idx: number) => {
-                    const x = (idx / (data.length - 1)) * 100
-                    const y = 100 - (item[dataKey] || 0) * 100
-                    return `L${x},${y}`
-                  })
-                  .join(" ")} L100,${100 - (data[data.length - 1]?.[dataKey] || 0) * 100} L100,100 L0,100 Z`}
-              />
+            {/* Chart area with reduced height to make room for labels */}
+            <div className="h-[90%] w-full relative">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
+                <defs>
+                  <linearGradient id={`gradient-${title}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+                    <stop offset="100%" stopColor={color} stopOpacity="0.2" />
+                  </linearGradient>
+                </defs>
+                {/* Arka plan alanı */}
+                <path
+                  fill="#2b213f"
+                  d={`M0,${100 - (data[0]?.[dataKey] || 0) * 100} ${data
+                    .map((item: any, idx: number) => {
+                      const x = (idx / (data.length - 1)) * 100
+                      const y = 100 - (item[dataKey] || 0) * 100
+                      return `L${x},${y}`
+                    })
+                    .join(" ")} L100,${100 - (data[data.length - 1]?.[dataKey] || 0) * 100} L100,100 L0,100 Z`}
+                />
 
-              {/* Smooth çizgi için path */}
-              <path
-                fill="none"
-                stroke={color}
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d={`M0,${100 - (data[0]?.[dataKey] || 0) * 100} ${data
-                  .map((item: any, idx: number) => {
-                    const x = (idx / (data.length - 1)) * 100
-                    const y = 100 - (item[dataKey] || 0) * 100
-                    return `${idx === 0 ? "M" : "S"} ${x},${y} ${x},${y}`
-                  })
-                  .join(" ")}`}
-              />
-            </svg>
-            <div className="absolute bottom-0 left-0 w-full flex justify-between text-[10px] text-zinc-500 px-1">
+                {/* Smooth çizgi için path */}
+                <path
+                  fill="none"
+                  stroke={color}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d={`M0,${100 - (data[0]?.[dataKey] || 0) * 100} ${data
+                    .map((item: any, idx: number) => {
+                      const x = (idx / (data.length - 1)) * 100
+                      const y = 100 - (item[dataKey] || 0) * 100
+                      return `${idx === 0 ? "M" : "S"} ${x},${y} ${x},${y}`
+                    })
+                    .join(" ")}`}
+                />
+              </svg>
+            </div>
+
+            {/* X-axis labels - Now positioned below the chart */}
+            <div className="h-[10%] w-full flex justify-between items-center px-1 mt-1">
               {data.map((item: any, idx: number) => (
-                <span key={idx}>{item.chapter}</span>
+                <span key={idx} className="text-[10px] text-zinc-300 font-medium">
+                  {item.chapter || idx + 1}
+                </span>
               ))}
             </div>
           </div>
         ) : (
-          <div className="absolute inset-0 flex items-end gap-[1px]">
-            {data.map((item: any, idx: number) => (
-              <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full">
-                <div
-                  className="w-full rounded-t"
-                  style={{
-                    height: `${(item[dataKey] || 0) * 100}%`,
-                    backgroundColor: color,
-                    minHeight: "4px", // En azından 4px yükseklik
-                  }}
-                />
-                <span className="text-[10px] text-zinc-500 mt-1">{item.chapter}</span>
-              </div>
-            ))}
+          <div className="h-full w-full relative">
+            {/* Bar chart with reduced height */}
+            <div className="absolute inset-0 bottom-5 flex items-end gap-[1px]">
+              {data.map((item: any, idx: number) => (
+                <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full">
+                  <div
+                    className="w-full rounded-t"
+                    style={{
+                      height: `${(item[dataKey] || 0) * 100}%`,
+                      backgroundColor: color,
+                      minHeight: "4px", // En azından 4px yükseklik
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* X-axis labels for bar chart - positioned at the bottom */}
+            <div className="absolute bottom-0 left-0 w-full flex justify-between items-center px-1 h-5">
+              {data.map((item: any, idx: number) => (
+                <span key={idx} className="text-[10px] text-zinc-300 font-medium">
+                  {item.chapter || idx + 1}
+                </span>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -283,7 +301,7 @@ export function BookDashboard({ bookTitle = mockBookTitle, isUploaded = false }:
                     x={item.x}
                     y={item.y}
                     fill="white"
-                    fontSize="3"
+                    fontSize="5"
                     textAnchor={item.textAnchor}
                     dominantBaseline="middle"
                   >
