@@ -15,6 +15,7 @@ export function AnalyzeTab() {
   const [errorMessage, setErrorMessage] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [customBookTitle, setCustomBookTitle] = useState<string | null>(null)
+  const [isBookUploaded, setIsBookUploaded] = useState(false)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
@@ -74,7 +75,8 @@ export function AnalyzeTab() {
       await new Promise((r) => setTimeout(r, 2000))
 
       setStatus("completed")
-      setCustomBookTitle(bookTitle)
+      setCustomBookTitle(bookTitle) // Orijinal başlığı kullanıcıya gösteriyoruz
+      setIsBookUploaded(true) // Kitap yüklendiğini işaretle
       setIsUploadModalOpen(false)
 
       resetForm()
@@ -114,9 +116,7 @@ export function AnalyzeTab() {
       <div className="absolute left-0 top-0 w-screen max-w-none px-0 mx-0 overflow-x-hidden py-6 pointer-events-none">
         <div className="pointer-events-auto">
           <div className="bg-zinc-900 rounded-xl px-6 py-10 mt-16 mb-12 mx-6 shadow-lg border border-zinc-700 z-0">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-              Curious how your story holds up?
-            </h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Curious how your story holds up?</h2>
             <p className="text-zinc-300 mb-4 text-sm md:text-base">
               See how each chapter performs in terms of tension, emotion, pacing, action & more.
             </p>
@@ -130,8 +130,8 @@ export function AnalyzeTab() {
           </div>
         </div>
 
-        <div className="relative z-0 pointer-events-none">
-          <BookDashboard bookTitle={customBookTitle || mockBookTitle} />
+        <div className="relative z-0 pointer-events-auto">
+          <BookDashboard bookTitle={customBookTitle || mockBookTitle} isUploaded={isBookUploaded} />
         </div>
       </div>
 
@@ -140,15 +140,24 @@ export function AnalyzeTab() {
           <div className="bg-zinc-900 rounded-xl p-6 shadow-xl w-full max-w-xl max-h-[90vh] overflow-y-auto z-50">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-white">Upload Your Book</h2>
-              <button onClick={closeUploadModal} className="text-zinc-400 hover:text-white">✕</button>
+              <button onClick={closeUploadModal} className="text-zinc-400 hover:text-white">
+                ✕
+              </button>
             </div>
 
             <div className="mb-6 bg-zinc-800 p-4 rounded-lg">
               <h3 className="text-lg font-semibold text-white mb-2">Guidelines for Upload:</h3>
               <ul className="text-zinc-300 list-disc pl-5 space-y-1">
-                <li>File format: <code className="bg-zinc-700 px-1 rounded">.txt</code> only</li>
-                <li>Maximum file size: <strong className="text-white">10MB</strong></li>
-                <li>Chapters must be clearly separated using <strong className="text-white">"Chapter 1"</strong>, <strong className="text-white">"Chapter 2"</strong>, etc.</li>
+                <li>
+                  File format: <code className="bg-zinc-700 px-1 rounded">.txt</code> only
+                </li>
+                <li>
+                  Maximum file size: <strong className="text-white">10MB</strong>
+                </li>
+                <li>
+                  Chapters must be clearly separated using <strong className="text-white">"Chapter 1"</strong>,{" "}
+                  <strong className="text-white">"Chapter 2"</strong>, etc.
+                </li>
                 <li>Avoid page numbers, author names, or publishing info at the start or end.</li>
                 <li>Plain text only, no formatting or special characters.</li>
               </ul>
@@ -159,7 +168,9 @@ export function AnalyzeTab() {
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="bookTitle" className="block text-zinc-300 mb-2">Book Title</label>
+                <label htmlFor="bookTitle" className="block text-zinc-300 mb-2">
+                  Book Title
+                </label>
                 <input
                   type="text"
                   id="bookTitle"
@@ -172,7 +183,9 @@ export function AnalyzeTab() {
               </div>
 
               <div>
-                <label htmlFor="fileUpload" className="block text-zinc-300 mb-2">Upload Manuscript (.txt only, max 10MB)</label>
+                <label htmlFor="fileUpload" className="block text-zinc-300 mb-2">
+                  Upload Manuscript (.txt only, max 10MB)
+                </label>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -202,8 +215,8 @@ export function AnalyzeTab() {
                         {status === "uploading"
                           ? "Uploading..."
                           : status === "parsing"
-                          ? "Parsing manuscript..."
-                          : "Analyzing content..."}
+                            ? "Parsing manuscript..."
+                            : "Analyzing content..."}
                       </span>
                     </div>
                   )}
