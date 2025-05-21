@@ -34,6 +34,35 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
   // Check if this is a polar/spider chart
   const isSpiderChart = processedData.data?.some((d: any) => d.type === "scatterpolar")
 
+  // Check if this is a timeline chart (based on title)
+  const isTimelineChart =
+    processedData.layout?.title?.text?.includes("Timeline") ||
+    (typeof processedData.layout?.title === "string" && processedData.layout.title.includes("Timeline"))
+
+  // Check if this is an emotional tone chart
+  const isEmotionalToneByGenre =
+    processedData.layout?.title?.text?.includes("Emotional Tone by Genre") ||
+    (typeof processedData.layout?.title === "string" && processedData.layout.title.includes("Emotional Tone by Genre"))
+
+  if (isMobile && isEmotionalToneByGenre) {
+  return (
+    <div
+      className={`bg-zinc-800 p-4 rounded-lg flex items-center justify-center text-center ${className}`}
+      style={{ height }}
+    >
+      <p className="text-zinc-400 text-sm md:text-base">
+        This chart is not optimized for mobile view.<br />
+        Please view it on a desktop device for the best experience.
+      </p>
+    </div>
+  )
+}
+
+  const isEmotionalToneByNarrative =
+    processedData.layout?.title?.text?.includes("Emotional Tone by Narrative") ||
+    (typeof processedData.layout?.title === "string" &&
+      processedData.layout.title.includes("Emotional Tone by Narrative"))
+
   // Apply consistent dark theme styling for all charts
   // Use the standard dark gray background for all charts
   processedData.layout.paper_bgcolor = "rgba(39, 39, 42, 0.8)"
@@ -80,6 +109,68 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
     })
   }
 
+  // Mobile-specific adjustments for Emotional Tone by Genre chart
+  if (isMobile && isEmotionalToneByGenre) {
+    // Remove top labels (Mild, Negative Intense, etc.)
+    if (processedData.layout.annotations) {
+      processedData.layout.annotations = processedData.layout.annotations.filter((annotation: any) => {
+        // Keep annotations that are not at the top of the chart
+        return !(annotation.y > 0.8 || annotation.text === "(+) Mild" || annotation.text === "Negative Intense")
+      })
+    }
+
+    // Ensure colorbar is visible
+    if (processedData.data && Array.isArray(processedData.data)) {
+      processedData.data.forEach((trace: any) => {
+        if (trace.type === "heatmap" || trace.type === "contour") {
+          trace.showscale = true
+          if (trace.colorbar) {
+            trace.colorbar.thickness = 10
+            trace.colorbar.len = 0.5
+            trace.colorbar.x = 1.02
+            trace.colorbar.xpad = 0
+          }
+        }
+      })
+    }
+
+    // Adjust margins to accommodate colorbar
+    processedData.layout.margin = {
+      ...(processedData.layout.margin || {}),
+      r: 50, // Increase right margin for colorbar
+      t: 40, // Top margin
+      l: 40, // Left margin
+      b: 80, // Increase bottom margin for genre labels
+    }
+  }
+
+  // Mobile-specific adjustments for Emotional Tone by Narrative Focus chart
+  if (isMobile && isEmotionalToneByNarrative) {
+    // Ensure colorbar is visible
+    if (processedData.data && Array.isArray(processedData.data)) {
+      processedData.data.forEach((trace: any) => {
+        if (trace.type === "heatmap" || trace.type === "contour") {
+          trace.showscale = true
+          if (trace.colorbar) {
+            trace.colorbar.thickness = 10
+            trace.colorbar.len = 0.5
+            trace.colorbar.x = 1.02
+            trace.colorbar.xpad = 0
+          }
+        }
+      })
+    }
+
+    // Adjust margins to accommodate colorbar
+    processedData.layout.margin = {
+      ...(processedData.layout.margin || {}),
+      r: 50, // Increase right margin for colorbar
+      t: 40, // Top margin
+      l: 40, // Left margin
+      b: 80, // Increase bottom margin for narrative focus labels
+    }
+  }
+
   // Style axis labels and grid lines
   if (processedData.layout.xaxis) {
     processedData.layout.xaxis = {
@@ -119,16 +210,21 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
     }
   }
 
-  // Style legend if present
+  // Style legend if present - HIDE ON MOBILE except for emotional tone charts
   if (processedData.layout.legend) {
-    processedData.layout.legend = {
-      ...processedData.layout.legend,
-      font: {
-        color: "#e4e4e7",
-        size: isMobile ? 10 : 12,
-      },
-      bgcolor: "rgba(39, 39, 42, 0.8)",
-      bordercolor: "#3f3f46",
+    if (isMobile && !isEmotionalToneByGenre && !isEmotionalToneByNarrative) {
+      // Hide legend completely on mobile for non-emotional tone charts
+      processedData.layout.showlegend = false
+    } else {
+      processedData.layout.legend = {
+        ...processedData.layout.legend,
+        font: {
+          color: "#e4e4e7",
+          size: isMobile ? 10 : 12,
+        },
+        bgcolor: "rgba(39, 39, 42, 0.8)",
+        bordercolor: "#3f3f46",
+      }
     }
   }
 
@@ -138,6 +234,8 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
       ...annotation,
       font: {
         ...annotation.font,
+        // Make timeline annotations smaller on mobile
+        size: isMobile && isTimelineChart ? 8 : annotation.font?.size || 12,
         color: "#e4e4e7",
       },
     }))
@@ -190,6 +288,15 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
         if (trace.line) {
           trace.line.color = "#8b5cf6" // Consistent purple line
         }
+
+        // Show colorbar on mobile for emotional tone charts, hide for others
+        if (isMobile) {
+          if (isEmotionalToneByGenre || isEmotionalToneByNarrative) {
+            trace.showscale = true
+          } else {
+            trace.showscale = false
+          }
+        }
       })
     }
   }
@@ -197,26 +304,52 @@ export function ChartViewer({ chartData, height = 400, className = "" }: ChartVi
   // Fix alignment issues by ensuring proper margins and container styling
   const chartMargins = {
     t: isMobile ? 50 : 40,
-    r: isMobile ? 20 : 30,
+    r: isMobile ? 10 : 30, // Reduce right margin on mobile since we're hiding legends
     l: isMobile ? 40 : 50,
     b: isMobile ? 40 : 50,
+  }
+
+  // For emotional tone charts, use custom margins defined above
+  if (isMobile && (isEmotionalToneByGenre || isEmotionalToneByNarrative)) {
+    // Custom margins already set above
+  } else {
+    // Use default margins for other charts
+    processedData.layout.margin = {
+      ...(processedData.layout.margin || {}),
+      ...chartMargins,
+    }
   }
 
   // Adjust height for mobile
   const chartHeight = isMobile ? Math.min(height, 350) : height
 
+  // For timeline charts on mobile, adjust the layout to prevent text overlap
+  if (isMobile && isTimelineChart && processedData.layout.annotations) {
+    // Reduce font size for all annotations
+    processedData.layout.annotations.forEach((annotation: any) => {
+      if (annotation.font) {
+        annotation.font.size = 8 // Smaller font size
+      }
+
+      // Adjust y position to prevent overlap
+      if (annotation.text && annotation.text.includes("Doorway")) {
+        // Move doorway labels up a bit
+        annotation.y = annotation.y + 0.05
+      } else if (annotation.text && annotation.text.includes("Major")) {
+        // Move midpoint label down a bit
+        annotation.y = annotation.y - 0.05
+      }
+    })
+  }
+
   try {
     return (
-      <div className={`bg-zinc-800 p-4 rounded-lg ${className}`}>
+      <div className={`bg-zinc-800 p-4 rounded-lg ${className} overflow-hidden`}>
         <Plot
           data={processedData.data}
           layout={{
             ...processedData.layout,
             autosize: true,
-            margin: {
-              ...(processedData.layout.margin || {}),
-              ...chartMargins,
-            },
             width: undefined, // Let it be responsive
             height: chartHeight,
           }}

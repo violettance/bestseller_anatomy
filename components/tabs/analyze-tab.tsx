@@ -115,7 +115,7 @@ export function AnalyzeTab() {
     <>
       <div className="absolute left-0 top-0 w-screen max-w-none px-0 mx-0 overflow-x-hidden py-6 pointer-events-none">
         <div className="pointer-events-auto">
-          <div className="bg-zinc-900 rounded-xl px-6 py-10 mt-16 mb-12 mx-6 shadow-lg border border-zinc-700 z-0">
+          <div className="bg-zinc-900 rounded-xl px-6 py-10 mt-24 mb-12 mx-6 shadow-lg border border-zinc-700 z-0">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Curious how your story holds up?</h2>
             <p className="text-zinc-300 mb-4 text-sm md:text-base">
               See how each chapter performs in terms of tension, emotion, pacing, action & more.
