@@ -13,7 +13,12 @@ A comprehensive narrative analytics platform that decodes the DNA of bestsellers
 
 The demo has two main features:
 - **Anatomy of a Bestseller** – Explore detailed insights and patterns from our analysis of successful novels, revealing the key elements that make stories resonate with readers
+
+![Anatomy of a Bestseller](images/tab-1.png)
+
 - **Analyze My Book** – Upload your manuscript (TXT) to receive a comprehensive metrics dashboard showing how your story compares to bestseller patterns
+
+![Analyze My Book](images/tab-2.png)
 
 ## 🔮 Coming Soon
 
