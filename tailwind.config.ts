@@ -7,7 +7,25 @@ const config: Config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
+    "./**/*.{js,ts,jsx,tsx,mdx}",
     "*.{js,ts,jsx,tsx,mdx}",
+  ],
+  safelist: [
+    // Rounded classes that might be purged
+    "rounded-lg",
+    "rounded-xl",
+    "rounded-md",
+    "rounded-full",
+    "rounded-t",
+    "rounded-b",
+    // Background classes
+    "bg-zinc-800",
+    "bg-zinc-900",
+    "bg-[#8b5cf6]",
+    // Border classes
+    "border-zinc-700",
+    "border-zinc-600",
   ],
   theme: {
     container: {
