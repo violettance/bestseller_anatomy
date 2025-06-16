@@ -18,7 +18,7 @@ The demo has two main features:
 
 - **Analyze My Book** – Upload your manuscript (TXT) to receive a comprehensive metrics dashboard showing how your story compares to bestseller patterns
 
-![Analyze My Book](images/tab-2.png)
+![Analyze My Book](public/images/tab-2.png)
 
 ## 🔮 Coming Soon
 
